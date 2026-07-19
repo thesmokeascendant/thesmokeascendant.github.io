@@ -1,74 +1,454 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Smoke Ascendant — systems architect &amp; author</title>
+<meta name="description" content="End-to-end systems architect and author. Linux, open source, solar infrastructure, and a literary practice spanning nonfiction, fiction, and philosophy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#121309;
+    --panel:#191a12;
+    --line:#33362a;
+    --line-soft:#24261c;
+    --ash:#a7ab98;
+    --ash-dim:#787c6b;
+    --paper:#eee9db;
+    --ember:#d6a24a;
+    --ember-dim:#8a6c33;
+    --sage:#8a9877;
+    --rail-w:300px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--ash);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.6;
+  }
+  ::selection{background:var(--ember-dim); color:var(--paper);}
+  a{color:var(--ember); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  a:focus-visible, button:focus-visible{outline:2px solid var(--ember); outline-offset:3px;}
 
-    <title>The Smoke Ascendant</title>
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .serif{font-family:'Fraunces', serif;}
 
-    <link rel="stylesheet" href="style.css">
+  /* ---- layout shell ---- */
+  .shell{display:flex; min-height:100vh;}
+
+  /* ---- left rail: filesystem tree nav ---- */
+  .rail{
+    width:var(--rail-w);
+    flex-shrink:0;
+    border-right:1px solid var(--line);
+    padding:2.5rem 1.75rem;
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+  }
+  .rail-id{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:var(--ash-dim);
+    letter-spacing:0.02em;
+    margin-bottom:2.2rem;
+  }
+  .rail-id .path{color:var(--ember);}
+  .tree{list-style:none; margin:0; padding:0; font-family:'IBM Plex Mono', monospace; font-size:0.86rem;}
+  .tree li{margin:0.15rem 0;}
+  .tree .branch{color:var(--ash-dim); user-select:none;}
+  .tree a{
+    color:var(--ash);
+    display:inline-block;
+    padding:0.12rem 0;
+  }
+  .tree a:hover{color:var(--ember); text-decoration:none;}
+  .tree a.active{color:var(--ember);}
+  .tree .sub{margin-left:1.4rem; margin-top:0.2rem;}
+  .tree .status{color:var(--sage); font-size:0.72rem; margin-left:0.4rem;}
+
+  .rail-foot{
+    margin-top:2.5rem;
+    padding-top:1.5rem;
+    border-top:1px solid var(--line-soft);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    color:var(--ash-dim);
+  }
+  .rail-foot a{color:var(--ash-dim);}
+  .rail-foot a:hover{color:var(--ember);}
+
+  /* ---- mobile rail toggle ---- */
+  .rail-toggle{
+    display:none;
+    position:fixed;
+    top:1rem; left:1rem;
+    z-index:40;
+    background:var(--panel);
+    border:1px solid var(--line);
+    color:var(--paper);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.8rem;
+    padding:0.5rem 0.8rem;
+    border-radius:2px;
+    cursor:pointer;
+  }
+
+  /* ---- main content ---- */
+  main{flex:1; min-width:0;}
+  section{
+    padding:5.5rem 4rem;
+    border-bottom:1px solid var(--line-soft);
+    max-width:920px;
+  }
+  section:last-of-type{border-bottom:none;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.76rem;
+    color:var(--ember);
+    letter-spacing:0.08em;
+    margin:0 0 1rem;
+  }
+  .eyebrow::before{content:"# ";}
+
+  h1,h2,h3{color:var(--paper); font-weight:500; margin:0;}
+  h1{font-family:'Fraunces', serif; font-size:clamp(2.4rem, 5vw, 3.6rem); font-weight:600; line-height:1.08;}
+  h2{font-family:'Fraunces', serif; font-size:clamp(1.6rem, 3vw, 2.1rem); margin-bottom:1.5rem;}
+  h3{font-family:'Fraunces', serif; font-size:1.25rem; margin-bottom:0.4rem;}
+
+  /* ---- hero ---- */
+  .hero{padding-top:6rem; position:relative;}
+  .hero-visual{
+    position:absolute;
+    top:1rem; right:-1rem;
+    width:min(38vw, 340px);
+    opacity:0.9;
+    pointer-events:none;
+  }
+  .hero-visual svg{width:100%; height:auto; display:block;}
+  @media (max-width: 1180px){ .hero-visual{display:none;} }
+  .hero .tagline{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--sage);
+    font-size:0.95rem;
+    margin:1.1rem 0 1.8rem;
+  }
+  .hero p.lede{max-width:60ch; color:var(--ash); font-size:1.05rem;}
+  .hero .badges{display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:2rem;}
+  .badge{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    color:var(--ash-dim);
+    border:1px solid var(--line);
+    padding:0.3rem 0.65rem;
+    border-radius:2px;
+  }
+
+  /* ---- log line rule used as section-open flourish ---- */
+  .rule{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--line);
+    font-size:0.7rem;
+    overflow:hidden;
+    white-space:nowrap;
+    margin-bottom:2.5rem;
+    letter-spacing:0.15em;
+  }
+
+  /* ---- project entries ---- */
+  .entry{
+    display:grid;
+    grid-template-columns:2.2rem 1fr auto;
+    gap:0.4rem 1.2rem;
+    align-items:baseline;
+    padding:1.1rem 0;
+    border-top:1px solid var(--line-soft);
+  }
+  .entry:first-of-type{border-top:none;}
+  .entry .idx{font-family:'IBM Plex Mono', monospace; color:var(--ash-dim); font-size:0.8rem;}
+  .entry .name{font-family:'IBM Plex Mono', monospace; color:var(--paper); font-size:0.95rem;}
+  .entry .desc{grid-column:2 / 3; color:var(--ash); font-size:0.92rem; margin-top:0.15rem;}
+  .entry .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    color:var(--sage);
+    align-self:start;
+    white-space:nowrap;
+  }
+  .entry a.repo{font-family:'IBM Plex Mono', monospace; font-size:0.78rem;}
+
+  /* ---- books ---- */
+  .book{padding:1.6rem 0; border-top:1px solid var(--line-soft);}
+  .book:first-of-type{border-top:none;}
+  .book .fmt{font-family:'IBM Plex Mono', monospace; font-size:0.7rem; color:var(--ash-dim); margin-top:0.5rem;}
+  .book p{max-width:62ch; margin:0.5rem 0 0; font-size:0.95rem;}
+
+  /* ---- about ---- */
+  #about p{max-width:62ch; font-size:1rem;}
+  #about p + p{margin-top:1.1rem;}
+
+  /* ---- contact ---- */
+  .contact-links{display:flex; flex-direction:column; gap:0.6rem; margin-top:1.5rem;}
+  .contact-links a{font-family:'IBM Plex Mono', monospace; font-size:0.95rem;}
+  .contact-links a::before{content:"→ "; color:var(--ember);}
+
+  footer{
+    padding:2.5rem 4rem 4rem;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    color:var(--ash-dim);
+  }
+
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+
+  @media (max-width: 880px){
+    .rail{
+      position:fixed;
+      left:0; top:0;
+      transform:translateX(-100%);
+      transition:transform 0.25s ease;
+      background:var(--ink);
+      z-index:30;
+      width:min(84vw, 320px);
+    }
+    .rail.open{transform:translateX(0);}
+    .rail-toggle{display:block;}
+    section{padding:4.5rem 1.5rem;}
+    .hero{padding-top:5rem;}
+    footer{padding:2rem 1.5rem 3rem;}
+    .entry{grid-template-columns:1.6rem 1fr;}
+    .entry .tag{grid-column:2/3;}
+  }
+</style>
 </head>
 <body>
 
-<header>
-    <h1>The Smoke Ascendant</h1>
+<button class="rail-toggle mono" id="railToggle" aria-expanded="false" aria-controls="rail">☰ index</button>
 
-    <nav>
-        <a href="#">Home</a>
-        <a href="#">About</a>
-        <a href="#">Projects</a>
-        <a href="#">Books</a>
-        <a href="#">Blog</a>
-        <a href="#">Research</a>
-        <a href="#">Contact</a>
-        <a href="https://github.com/thesmokeascendant" target="_blank">
-            GitHub
-        </a>
-    </nav>
-</header>
+<div class="shell">
+  <nav class="rail" id="rail" aria-label="Site sections">
+    <div class="rail-id">~/<span class="path">thesmokeascendant</span></div>
+    <ul class="tree">
+      <li><span class="branch">├──</span> <a href="#top">home</a></li>
+      <li><span class="branch">├──</span> <a href="#about">about</a></li>
+      <li><span class="branch">├──</span> <a href="#work">work/</a></li>
+      <li class="sub">
+        <ul class="tree">
+          <li><span class="branch">├──</span> <a href="#work">aura</a> <span class="status">in progress</span></li>
+          <li><span class="branch">└──</span> <a href="#work">systems-toolkit</a> <span class="status">10/10</span></li>
+        </ul>
+      </li>
+      <li><span class="branch">├──</span> <a href="#books">books/</a></li>
+      <li class="sub">
+        <ul class="tree">
+          <li><span class="branch">├──</span> <a href="#books">silence</a></li>
+          <li><span class="branch">├──</span> <a href="#books">systems</a></li>
+          <li><span class="branch">├──</span> <a href="#books">security</a></li>
+          <li><span class="branch">└──</span> <a href="#books">smoke-and-mirrors</a></li>
+        </ul>
+      </li>
+      <li><span class="branch">└──</span> <a href="#contact">contact</a></li>
+    </ul>
+    <div class="rail-foot">
+      Nigeria<br>
+      systems architecture · open source
+    </div>
+  </nav>
 
-<main>
+  <main id="top">
 
-<section class="hero">
+    <section class="hero">
+      <div class="hero-visual" aria-hidden="true">
+        <svg viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="riseFade" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stop-color="#d6a24a" stop-opacity="0"/>
+              <stop offset="60%" stop-color="#d6a24a" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#eee9db" stop-opacity="0.85"/>
+            </linearGradient>
+          </defs>
+          <g fill="none" stroke="url(#riseFade)" stroke-width="1.1" stroke-linecap="round">
+            <path d="M40,410 C60,350 20,320 45,270 C70,220 20,190 55,140 C90,90 40,60 70,10"/>
+            <path d="M110,415 C130,360 90,330 120,280 C150,230 95,195 135,150 C175,105 120,70 155,15" opacity="0.7"/>
+            <path d="M185,405 C205,345 165,315 195,260 C225,205 170,175 210,120 C250,65 195,45 225,5" opacity="0.45"/>
+          </g>
+          <g fill="#eee9db">
+            <circle cx="70" cy="10" r="2"/>
+            <circle cx="155" cy="15" r="1.6" opacity="0.7"/>
+            <circle cx="225" cy="5" r="1.4" opacity="0.45"/>
+          </g>
+        </svg>
+      </div>
+      <p class="eyebrow">whoami</p>
+      <h1>The Smoke Ascendant</h1>
+      <p class="tagline">systems architect — author — builder</p>
+      <p class="lede">An end-to-end systems architect, self-taught across the Linux kernel, open-source contribution, solar infrastructure, and real estate — who also runs a parallel, disciplined literary practice: nonfiction, fiction, and philosophy. Based in Nigeria.</p>
+      <div class="badges">
+        <span class="badge">systems architecture</span>
+        <span class="badge">Linux</span>
+        <span class="badge">Python</span>
+        <span class="badge">open source</span>
+        <span class="badge">author</span>
+      </div>
+    </section>
 
-    <h2>Learning. Building. Publishing.</h2>
+    <section id="about">
+      <p class="eyebrow">about</p>
+      <h2>Two disciplines, one method</h2>
+      <p>Everything here comes from the same instinct: take a system apart until you understand why it holds, then rebuild it cleaner. That applies as much to a log parser as it does to a chapter — both get pulled apart, tested against edge cases, and rewritten until the architecture is honest.</p>
+      <p>Technical work spans Linux internals, open-source contribution, solar infrastructure, and real estate. Alongside it, a serious literary practice produces nonfiction, fiction, and philosophical books under the name Smoke Ascendant.</p>
+    </section>
 
-    <p>
-        This website documents my journey through Computing: Linux,
-        networking, programming, cybersecurity, AI,
-        and the publication of my books
-        <strong></strong>.
-    </p>
+    <section id="work">
+      <p class="eyebrow">work</p>
+      <h2>work/</h2>
+      <div class="rule">────────────────────────────────────────────────────────</div>
 
-</section>
+      <div class="entry" style="grid-template-columns:2.2rem 1fr auto; border-top:none;">
+        <span class="idx mono">→</span>
+        <span class="name">aura</span>
+        <span class="tag" style="color:var(--ember);">in progress</span>
+        <p class="desc">AI digital clone platform. Led the frontend architecture — session/store design, streaming, voice input, and the full rebrand — as one part of a small team. Live link ships once it's public.</p>
+      </div>
 
-<section>
+      <p class="eyebrow" style="margin-top:3rem;">systems-toolkit/</p>
+      <div class="entry">
+        <span class="idx mono">01</span>
+        <span class="name">log-analyzer</span>
+        <span class="tag">complete</span>
+        <p class="desc">Fault-tolerant streaming log parser with recovery reporting.</p>
+      </div>
+      <div class="entry">
+        <span class="idx mono">02</span>
+        <span class="name">api-client</span>
+        <span class="tag">complete</span>
+        <p class="desc">Defensive REST client — retry/backoff, typed exceptions, Retry-After handling, tested against a live local server.</p>
+      </div>
+      <div class="entry">
+        <span class="idx mono">03</span>
+        <span class="name">web-scraper</span>
+        <span class="tag">complete</span>
+        <p class="desc">Fetch/parse split with robots.txt handling, per-host rate limiting, and ragged-HTML recovery.</p>
+      </div>
+      <div class="entry">
+        <span class="idx mono">04</span>
+        <span class="name">pdf-parser</span>
+        <span class="tag">complete</span>
+        <p class="desc">Text, table, and metadata extraction with handling for encrypted, corrupted, and scanned PDFs.</p>
+      </div>
+      <div class="entry">
+        <span class="idx mono">05</span>
+        <span class="name">file-organizer</span>
+        <span class="tag">complete</span>
+        <p class="desc">Category-based organizer with dry-run mode, reversible undo, and collision-safe renaming.</p>
+      </div>
+      <div class="entry">
+        <span class="idx mono">06</span>
+        <span class="name">git-health</span>
+        <span class="tag">complete</span>
+        <p class="desc">Repo diagnostics — detached HEAD, stale branches, unpushed commits, large files, conflict markers.</p>
+      </div>
+      <div class="entry">
+        <span class="idx mono">07</span>
+        <span class="name">ssh-automation</span>
+        <span class="tag">complete</span>
+        <p class="desc">Multi-host SSH/SCP runner with transport-vs-command error classification and safe retry logic.</p>
+      </div>
+      <div class="entry">
+        <span class="idx mono">08</span>
+        <span class="name">corrupted-csv</span>
+        <span class="tag">complete</span>
+        <p class="desc">Delimiter auto-detection, ragged-row repair, encoding-error handling, and a recovery report.</p>
+      </div>
+      <div class="entry">
+        <span class="idx mono">09</span>
+        <span class="name">duplicate-finder</span>
+        <span class="tag">complete</span>
+        <p class="desc">Three-stage size/hash funnel — measured 2.79× faster than a naive scan, validated at 20,000 files.</p>
+      </div>
+      <div class="entry">
+        <span class="idx mono">10</span>
+        <span class="name">ai-cli</span>
+        <span class="tag">complete</span>
+        <p class="desc">Pluggable LLM backend with prompt templating and persisted, trimmed conversation history.</p>
+      </div>
 
-<h2>Current Projects</h2>
+      <p style="margin-top:2rem; font-size:0.9rem;">Ten projects, all complete — 184 tests passing. Each ships with a full README (design decisions, tradeoffs, edge cases, lessons learned) and an engineering journal. <a href="https://github.com/thesmokeascendant/systems-toolkit" target="_blank" rel="noopener">Browse the repo on GitHub ↗</a></p>
+    </section>
 
-<ul>
-    <li>Portfolio</li>
-    <li>Linux-tools</li>
-    <li>Python-tools</li>
-    <li>Automation-tools</li>
-    <li>AI-Projects</li>
-    <li>Smoke and Mirrors</li>
-    <li></li>
-</ul>
+    <section id="books">
+      <p class="eyebrow">books</p>
+      <h2>library/</h2>
+      <div class="rule">────────────────────────────────────────────────────────</div>
 
-</section>
+      <div class="book">
+        <h3>SILENCE: As a Force</h3>
+        <p>Nonfiction, eighteen chapters across five parts, with five italicized biographical interludes.</p>
+        <div class="fmt">DOCX · PDF · EPUB</div>
+      </div>
+      <div class="book">
+        <h3>SYSTEMS</h3>
+        <p>A novel — roughly 55,000 words across eighteen chapters and an epilogue.</p>
+      </div>
+      <div class="book">
+        <h3>Security</h3>
+        <p><em>Why every enduring system learns to protect itself.</em> Nonfiction built around the SARRS framework, told in a first-person narrator voice.</p>
+      </div>
+      <div class="book">
+        <h3>Smoke and Mirrors</h3>
+        <p><em>Who Taught You to Think?</em> A philosophical, personal-development book in five parts across twenty-five chapters.</p>
+      </div>
+    </section>
 
-</main>
+    <section id="contact">
+      <p class="eyebrow">contact</p>
+      <h2>Get in touch</h2>
+      <div class="contact-links">
+        <a href="mailto:thesmokeascendant@gmail.com">thesmokeascendant@gmail.com</a>
+        <a href="https://x.com/smokeascendant" target="_blank" rel="noopener">x.com/smokeascendant</a>
+        <a href="https://github.com/thesmokeascendant" target="_blank" rel="noopener">github.com/thesmokeascendant</a>
+      </div>
+    </section>
 
-<footer>
+    <footer>
+      © 2026 The Smoke Ascendant
+    </footer>
+  </main>
+</div>
 
-<p>
-© 2026 The Smoke Ascendant
-</p>
+<script>
+  const toggle = document.getElementById('railToggle');
+  const rail = document.getElementById('rail');
+  toggle.addEventListener('click', () => {
+    const open = rail.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
+  // close mobile rail after a nav click
+  rail.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    if (window.innerWidth <= 880){ rail.classList.remove('open'); toggle.setAttribute('aria-expanded', false); }
+  }));
 
-</footer>
-
-<script src="script.js"></script>
+  // active-link highlight on scroll
+  const sections = ['about','work','books','contact'].map(id => document.getElementById(id));
+  const links = rail.querySelectorAll('.tree > li > a[href^="#"]');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting){
+        links.forEach(l => l.classList.remove('active'));
+        const match = rail.querySelector('a[href="#'+e.target.id+'"]');
+        if (match) match.classList.add('active');
+      }
+    });
+  }, {rootMargin:'-40% 0px -50% 0px'});
+  sections.forEach(s => s && obs.observe(s));
+</script>
 
 </body>
 </html>

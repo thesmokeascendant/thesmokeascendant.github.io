@@ -1,0 +1,9 @@
+{
+  "name": "The Smoke Ascendant",
+  "short_name": "Smoke Ascendant",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#121309",
+  "theme_color": "#121309",
+  "icons": [{ "src": "/assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

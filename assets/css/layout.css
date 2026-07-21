@@ -1,0 +1,134 @@
+/* ============================================================
+   Smoke Ascendant — layout.css
+   Shell, nav rail, cards, entries, footer
+   ============================================================ */
+
+.shell{ display:flex; min-height:100vh; }
+
+/* -- progress bar -- */
+.site-progress{
+  position:fixed; top:0; left:0; height:2px; width:0%;
+  background:var(--ember); z-index:60; transition:width 0.1s linear;
+}
+
+/* -- rail navigation (filesystem tree) -- */
+.rail{
+  width:var(--rail-w); flex-shrink:0;
+  border-right:1px solid var(--line);
+  padding:2.4rem 1.6rem;
+  position:sticky; top:0; height:100vh; overflow-y:auto;
+}
+.rail-id{ font-family:var(--font-mono); font-size:0.78rem; color:var(--ash-dim); margin-bottom:2rem; }
+.rail-id a{ color:var(--ember); }
+
+.tree{ list-style:none; margin:0 0 2rem; padding:0; font-family:var(--font-mono); font-size:0.85rem; }
+.tree li{ margin:0.15rem 0; }
+.tree .branch{ color:var(--ash-dim); user-select:none; }
+.tree a{ color:var(--ash); display:inline-block; padding:0.1rem 0; }
+.tree a:hover{ color:var(--ember); text-decoration:none; }
+.tree a.active{ color:var(--ember); }
+.tree .sub{ margin-left:1.3rem; margin-top:0.15rem; }
+.tree .status{ color:var(--sage); font-size:0.7rem; margin-left:0.3rem; }
+.tree .status.in-progress{ color:var(--ember); }
+
+.rail-foot{
+  padding-top:1.4rem; border-top:1px solid var(--line-soft);
+  font-family:var(--font-mono); font-size:0.72rem; color:var(--ash-dim);
+}
+
+.rail-toggle{
+  display:none; position:fixed; top:1rem; left:1rem; z-index:50;
+  background:var(--ink-panel); border:1px solid var(--line); color:var(--paper);
+  font-family:var(--font-mono); font-size:0.8rem; padding:0.5rem 0.8rem;
+  border-radius:2px; cursor:pointer;
+}
+
+/* -- main / sections -- */
+main{ flex:1; min-width:0; }
+.page{ padding:5rem 4rem 6rem; max-width:var(--content-max); }
+.page-wide{ padding:5rem 4rem 6rem; max-width:960px; }
+.crumbs{ font-family:var(--font-mono); font-size:0.74rem; color:var(--ash-dim); margin-bottom:var(--sp-3); }
+.crumbs a{ color:var(--ash-dim); }
+.crumbs a:hover{ color:var(--ember); }
+
+section + section{ border-top:1px solid var(--line-soft); margin-top:var(--sp-5); padding-top:var(--sp-5); }
+
+/* -- hero -- */
+.hero{ position:relative; }
+.hero-visual{ position:absolute; top:0.5rem; right:-1rem; width:min(34vw,300px); opacity:0.9; pointer-events:none; }
+.hero-visual svg{ width:100%; height:auto; display:block; }
+@media (max-width:1180px){ .hero-visual{ display:none; } }
+.tagline{ font-family:var(--font-mono); color:var(--sage); font-size:0.95rem; margin:0.4rem 0 1.4rem; }
+
+/* -- card grid (index pages) -- */
+.grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:1.2rem; margin-top:var(--sp-3); }
+.card{
+  border:1px solid var(--line); border-radius:3px; padding:var(--sp-3);
+  background:var(--ink-panel); display:flex; flex-direction:column; gap:0.5rem;
+}
+.card h3{ margin:0; }
+.card h3 a{ color:var(--paper); }
+.card h3 a:hover{ color:var(--ember); }
+.card p{ font-size:0.9rem; margin:0; }
+.card .meta{ display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:0.6rem; }
+
+/* -- directory-style entry list -- */
+.entry{
+  display:grid; grid-template-columns:2.4rem 1fr auto; gap:0.3rem 1.2rem;
+  align-items:baseline; padding:1rem 0; border-top:1px solid var(--line-soft);
+}
+.entry:first-of-type{ border-top:none; }
+.entry .idx{ font-family:var(--font-mono); color:var(--ash-dim); font-size:0.8rem; }
+.entry .name a{ font-family:var(--font-mono); color:var(--paper); font-size:0.95rem; }
+.entry .name a:hover{ color:var(--ember); }
+.entry .desc{ grid-column:2/3; color:var(--ash); font-size:0.92rem; margin:0.1rem 0 0; }
+@media (max-width:700px){
+  .entry{ grid-template-columns:1.6rem 1fr; }
+  .entry .tag{ grid-column:2/3; }
+}
+
+/* -- empty state (research / journal) -- */
+.empty-state{
+  border:1px dashed var(--line); border-radius:3px; padding:var(--sp-4);
+  color:var(--ash-dim); font-family:var(--font-mono); font-size:0.85rem;
+}
+
+/* -- journal entries -- */
+.journal-entry{ padding:var(--sp-3) 0; border-top:1px solid var(--line-soft); }
+.journal-entry:first-of-type{ border-top:none; }
+.journal-entry time{ font-family:var(--font-mono); font-size:0.74rem; color:var(--ash-dim); }
+
+/* -- book detail layout -- */
+.book-head{ display:flex; gap:var(--sp-4); flex-wrap:wrap; align-items:flex-start; }
+.book-cover{ width:140px; flex-shrink:0; }
+.book-cover svg{ width:100%; height:auto; }
+.book-meta dl{ display:grid; grid-template-columns:auto 1fr; gap:0.3rem 1rem; font-size:0.88rem; margin:0.8rem 0; }
+.book-meta dt{ font-family:var(--font-mono); color:var(--ash-dim); }
+.book-meta dd{ margin:0; color:var(--ash); }
+
+.progress-bar{ height:4px; background:var(--line-soft); border-radius:2px; overflow:hidden; margin:0.4rem 0 0.2rem; max-width:220px; }
+.progress-bar span{ display:block; height:100%; background:var(--ember); }
+
+/* -- contact -- */
+.contact-links{ display:flex; flex-direction:column; gap:0.6rem; margin-top:var(--sp-3); }
+.contact-links a{ font-family:var(--font-mono); font-size:0.95rem; }
+.contact-links a::before{ content:"→ "; color:var(--ember); }
+
+/* -- footer -- */
+.site-footer{
+  padding:2.2rem 4rem 3.5rem; font-family:var(--font-mono); font-size:0.72rem; color:var(--ash-dim);
+  border-top:1px solid var(--line-soft); margin-top:var(--sp-6);
+}
+.site-footer a{ color:var(--ash-dim); }
+.site-footer a:hover{ color:var(--ember); }
+
+@media (max-width:880px){
+  .rail{
+    position:fixed; left:0; top:0; transform:translateX(-100%);
+    transition:transform 0.22s ease; background:var(--ink); z-index:40; width:min(84vw,300px);
+  }
+  .rail.open{ transform:translateX(0); }
+  .rail-toggle{ display:block; }
+  .page, .page-wide{ padding:4.4rem 1.4rem 4rem; }
+  .site-footer{ padding:2rem 1.4rem 3rem; }
+}

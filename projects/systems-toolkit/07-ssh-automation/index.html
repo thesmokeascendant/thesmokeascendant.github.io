@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ssh-automation — systems-toolkit — The Smoke Ascendant</title>
+<meta name="description" content="Multi-host SSH/SCP runner with transport-vs-command error classification.">
+<link rel="canonical" href="https://thesmokeascendant.github.io/projects/systems-toolkit/07-ssh-automation/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ssh-automation — systems-toolkit — The Smoke Ascendant">
+<meta property="og:description" content="Multi-host SSH/SCP runner with transport-vs-command error classification.">
+<meta property="og:url" content="https://thesmokeascendant.github.io/projects/systems-toolkit/07-ssh-automation/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ssh-automation — systems-toolkit — The Smoke Ascendant">
+<meta name="twitter:description" content="Multi-host SSH/SCP runner with transport-vs-command error classification.">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/layout.css">
+</head>
+<body>
+<div class="site-progress"></div>
+<div class="shell">
+
+<nav class="rail" id="rail" aria-label="Site sections">
+  <div class="rail-id"><a href="/">smoke-ascendant</a></div>
+  <ul class="tree">
+    <li><span class="branch">├──</span> <a href="/" data-nav="home">home</a></li>
+    <li><span class="branch">├──</span> <a href="/about/" data-nav="about">about</a></li>
+    <li><span class="branch">├──</span> <a href="/projects/" data-nav="projects">projects/</a></li>
+    <li class="sub"><ul class="tree">
+      <li><span class="branch">├──</span> <a href="/projects/aura/" data-nav="aura">aura</a> <span class="status in-progress">in progress</span></li>
+      <li><span class="branch">├──</span> <a href="/projects/systems-toolkit/" data-nav="systems-toolkit" class="active">systems-toolkit</a> <span class="status">10/10</span></li>
+      <li><span class="branch">├──</span> <a href="/projects/activity-logger/" data-nav="activity-logger">activity-logger</a> <span class="status in-progress">in progress</span></li>
+      <li><span class="branch">└──</span> <a href="/projects/tintoreria-laredo/" data-nav="tintoreria-laredo">tintoreria-laredo</a> <span class="status">prototype</span></li>
+    </ul></li>
+    <li><span class="branch">├──</span> <a href="/books/" data-nav="books">books/</a></li>
+    <li class="sub"><ul class="tree">
+      <li><span class="branch">├──</span> <a href="/books/silence/" data-nav="silence">silence</a></li>
+      <li><span class="branch">├──</span> <a href="/books/systems/" data-nav="systems-book">systems</a></li>
+      <li><span class="branch">├──</span> <a href="/books/security/" data-nav="security">security</a></li>
+      <li><span class="branch">└──</span> <a href="/books/smoke-and-mirrors/" data-nav="smoke-and-mirrors">smoke-and-mirrors</a></li>
+    </ul></li>
+    <li><span class="branch">├──</span> <a href="/research/" data-nav="research">research/</a></li>
+    <li><span class="branch">├──</span> <a href="/journal/" data-nav="journal">journal/</a></li>
+    <li><span class="branch">└──</span> <a href="/contact/" data-nav="contact">contact</a></li>
+  </ul>
+  <div class="rail-foot">Nigeria<br>systems architecture · open source</div>
+</nav>
+<button class="rail-toggle font-mono" id="railToggle" aria-expanded="false" aria-controls="rail">☰ index</button>
+
+<main>
+<div class="page">
+
+<div class="crumbs"><a href="/projects/">projects</a> / <a href="/projects/systems-toolkit/">systems-toolkit</a> / ssh-automation</div>
+<p class="eyebrow">systems-toolkit — 07 of 10</p>
+<h1>ssh-automation</h1>
+<p class="tagline">Multi-host SSH/SCP runner with transport-vs-command error classification.</p>
+<div class="badges"><span class="badge">complete</span><span class="badge">Python</span></div>
+
+<hr class="hairline">
+
+<h2>Overview</h2>
+<p>A subprocess-based multi-host SSH/SCP runner with retry logic and parallel fan-out across hosts, preserving result order.</p>
+
+<h2>Architecture</h2>
+<p>Classifies failures as transport-level (connection, host key) versus command-level (the remote command itself failed) — a real distinction, since only some of those should be retried.</p>
+
+<h2>Engineering decisions</h2>
+<p>Auth and host-key failures are never retried automatically, since retrying those blindly can lock out or mask a real security problem.</p>
+
+<h2>Tradeoffs</h2>
+<p>Parallel fan-out with preserved result ordering adds coordination overhead versus a simple loop, but makes results usable without extra sorting downstream.</p>
+
+<h2>Lessons learned</h2>
+<p>Tested via an injected fake runner, since no real SSH server or network access was available in the build environment.</p>
+
+<h2>Repository</h2>
+<p><a href="https://github.com/thesmokeascendant/systems-toolkit/tree/main/07-ssh-automation" target="_blank" rel="noopener">View 07-ssh-automation on GitHub ↗</a></p>
+<div style="display:flex; justify-content:space-between; margin-top:var(--sp-5); font-family:var(--font-mono); font-size:0.85rem;"><a href="/projects/systems-toolkit/06-git-health/">← git-health</a><span></span><a href="/projects/systems-toolkit/08-corrupted-csv/">corrupted-csv →</a></div>
+
+</div>
+
+<footer class="site-footer">
+  <div>&copy; 2026 The Smoke Ascendant. Built by hand, not templated.</div>
+  <div style="margin-top:0.4rem;"><a href="/contact/">thesmokeascendant@gmail.com</a> · <a href="https://x.com/smokeascendant" target="_blank" rel="noopener">x.com/smokeascendant</a> · <a href="https://github.com/thesmokeascendant" target="_blank" rel="noopener">github.com/thesmokeascendant</a></div>
+</footer>
+
+</main>
+</div>
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

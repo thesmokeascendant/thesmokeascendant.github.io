@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://thesmokeascendant.github.io/sitemap.xml

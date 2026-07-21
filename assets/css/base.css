@@ -1,0 +1,137 @@
+/* ============================================================
+   Smoke Ascendant — base.css
+   Design tokens, resets, typography
+   ============================================================ */
+
+:root{
+  /* -- color: muted paper / ash / ink / sage / ember -- */
+  --ink:          #121309;
+  --ink-panel:    #191a12;
+  --line:         #33362a;
+  --line-soft:    #24261c;
+  --ash:          #a7ab98;
+  --ash-dim:      #787c6b;
+  --paper:        #eee9db;
+  --sage:         #8a9877;
+  --ember:        #d6a24a;
+  --ember-dim:    #8a6c33;
+
+  /* -- type -- */
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans:  'IBM Plex Sans', -apple-system, sans-serif;
+  --font-mono:  'IBM Plex Mono', 'SF Mono', monospace;
+
+  /* -- spacing scale -- */
+  --sp-1: 0.4rem;
+  --sp-2: 0.8rem;
+  --sp-3: 1.4rem;
+  --sp-4: 2.2rem;
+  --sp-5: 3.4rem;
+  --sp-6: 5.2rem;
+
+  --rail-w: 280px;
+  --content-max: 760px;
+}
+
+*, *::before, *::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+
+body{
+  margin:0;
+  background:var(--ink);
+  color:var(--ash);
+  font-family:var(--font-sans);
+  font-size:16px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+
+::selection{ background:var(--ember-dim); color:var(--paper); }
+
+a{ color:var(--ember); text-decoration:none; }
+a:hover{ text-decoration:underline; }
+a:focus-visible, button:focus-visible, input:focus-visible{
+  outline:2px solid var(--ember); outline-offset:3px;
+}
+
+h1,h2,h3,h4{ color:var(--paper); font-weight:500; margin:0 0 var(--sp-2); }
+.font-serif{ font-family:var(--font-serif); }
+.font-mono{ font-family:var(--font-mono); }
+
+h1{ font-family:var(--font-serif); font-weight:600; font-size:clamp(2.2rem,4.6vw,3.2rem); line-height:1.1; }
+h2{ font-family:var(--font-serif); font-size:clamp(1.5rem,3vw,1.9rem); }
+h3{ font-family:var(--font-serif); font-size:1.2rem; }
+h4{ font-family:var(--font-mono); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--sage); }
+
+p{ margin:0 0 var(--sp-2); max-width:64ch; }
+p.lede{ font-size:1.05rem; color:var(--ash); max-width:60ch; }
+
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:0.76rem;
+  color:var(--ember);
+  letter-spacing:0.05em;
+  margin:0 0 var(--sp-2);
+}
+.eyebrow::before{ content:"# "; }
+
+.rule{
+  font-family:var(--font-mono);
+  color:var(--line);
+  font-size:0.7rem;
+  overflow:hidden;
+  white-space:nowrap;
+  letter-spacing:0.15em;
+  margin:0 0 var(--sp-4);
+}
+
+blockquote{
+  margin:var(--sp-3) 0;
+  padding-left:var(--sp-3);
+  border-left:2px solid var(--ember-dim);
+  color:var(--paper);
+  font-family:var(--font-serif);
+  font-style:italic;
+  font-size:1.05rem;
+}
+
+code, pre{ font-family:var(--font-mono); font-size:0.85rem; }
+pre{
+  background:var(--ink-panel);
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:var(--sp-2) var(--sp-3);
+  overflow-x:auto;
+  color:var(--ash);
+}
+code{ background:var(--ink-panel); padding:0.1em 0.35em; border-radius:2px; color:var(--sage); }
+pre code{ background:none; padding:0; color:inherit; }
+
+table{ width:100%; border-collapse:collapse; font-size:0.9rem; margin:var(--sp-3) 0; }
+th, td{ text-align:left; padding:0.55rem 0.8rem; border-bottom:1px solid var(--line-soft); }
+th{ font-family:var(--font-mono); color:var(--paper); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em; }
+
+.badges{ display:flex; gap:0.6rem; flex-wrap:wrap; }
+.badge{
+  font-family:var(--font-mono); font-size:0.72rem; color:var(--ash-dim);
+  border:1px solid var(--line); padding:0.3rem 0.65rem; border-radius:2px;
+}
+
+.tag{ font-family:var(--font-mono); font-size:0.68rem; color:var(--sage); white-space:nowrap; }
+.tag.in-progress{ color:var(--ember); }
+.tag.planned{ color:var(--ash-dim); }
+
+hr.hairline{ border:none; border-top:1px solid var(--line-soft); margin:var(--sp-4) 0; }
+
+.visually-hidden{
+  position:absolute; width:1px; height:1px; overflow:hidden;
+  clip:rect(0 0 0 0); white-space:nowrap;
+}
+
+@media print{
+  .rail, .rail-toggle, .site-progress{ display:none !important; }
+  body{ background:#fff; color:#111; }
+  h1,h2,h3,h4{ color:#000; }
+  a{ color:#000; text-decoration:underline; }
+}

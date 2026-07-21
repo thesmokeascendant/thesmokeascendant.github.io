@@ -64,14 +64,14 @@
 <hr class="hairline">
 
 <h2>Overview</h2>
-<p>AURA is an AI digital clone platform built with a small team — Rohit and Humam alongside this work. The contribution here is frontend architecture: the interface layer a user actually talks to the clone through, not the model behind it.</p>
+<p>AURA is an AI digital clone platform built with a small team — Rohit and Humam. The contribution here is frontend architecture: the interface layer a user actually talks to the clone through, not the model behind it.</p>
 
 <h2>Problem</h2>
-<p>The chat surface needed to hold multiple concurrent conversations without state bleeding between them, stream model output live, accept voice as an input method, and render markdown correctly — while carrying a visual identity that didn't look like a generic chat template.</p>
+<p>The chat surface needed to hold multiple concurrent conversations without state bleeding between them, stream model output live, accept voice as an input method, and render markdown correctly — while carrying a visual identity that is not a generic chat template.</p>
 
 <h2>Architecture &amp; work done</h2>
 <ul>
-<li>Rebuilt <code>Chat.jsx</code> around a multi-session store architecture, replacing whatever single-thread assumptions were baked into the earlier version.</li>
+<li>Rebuilt <code>Chat.jsx</code> around a multi-session store architecture, replacing single-thread assumptions that were baked into the earlier version.</li>
 <li>Added streaming responses, voice input, and markdown rendering to the chat surface.</li>
 <li>Added conversation export.</li>
 <li>Fixed a series of production bugs across multiple work sessions.</li>
@@ -87,7 +87,7 @@
 </div>
 
 <footer class="site-footer">
-  <div>&copy; 2026 The Smoke Ascendant. Built by hand, not templated.</div>
+  <div>&copy; 2026 The Smoke Ascendant.</div>
   <div style="margin-top:0.4rem;"><a href="/contact/">thesmokeascendant@gmail.com</a> · <a href="https://x.com/smokeascendant" target="_blank" rel="noopener">x.com/smokeascendant</a> · <a href="https://github.com/thesmokeascendant" target="_blank" rel="noopener">github.com/thesmokeascendant</a></div>
 </footer>
 
